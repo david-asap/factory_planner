@@ -1,0 +1,279 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f5f5f5;
+    margin: 0;
+    padding: 20px;
+}
+
+.container {
+    position: relative;
+    width: 1000px;
+    height: 600px;
+    border: 2px solid black;
+    background-color: #d9d9d9;
+    margin: 20px auto;
+    overflow: auto;
+}
+
+.controls {
+    text-align: center;
+    margin: 20px;
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+button {
+    padding: 15px 25px;
+    font-size: 16px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    margin: 5px;
+    transition: background-color 0.3s;
+}
+
+button:hover {
+    filter: brightness(85%);
+}
+
+.reset-btn {
+    background-color: #f44336;
+}
+
+.reset-btn:hover {
+    background-color: #da190b;
+}
+
+.raft:hover {
+    filter: brightness(130%);
+}
+
+.raft {
+    width: 100px;
+    height: 30px;
+    background-color:#333;
+    border: 2px solid #333;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+    flex-shrink: 0;
+    transition: background-color 0.3s;
+}
+
+/* Pozitionez rafturile fata de intrare (invers) */
+.rafturi-container {
+    display: flex;
+    gap: 20px; /* Distanță egală automată între toate rafturile */
+    position: absolute;
+    right: 100px;
+    flex-direction: row;
+}
+
+.popup{
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: rgb(214, 235, 253);
+    border: 2px solid #333;
+    width: 500px;
+    height: 425px;
+    border: #333;
+    padding: 20px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+    border-radius: 10px;
+    z-index: 9999;
+    display: none;
+    overflow: hidden;
+}
+
+.popup-header {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 5px;
+    font-weight: bold;
+    height: 20px;
+    border-bottom: 2px solid #ccc;
+    margin-bottom: 10px;
+}
+
+.popup-title{
+    font-size: 25px;
+}
+
+.close-btn{
+    position: absolute;
+    width: 40px;
+    height: 20px;
+    padding: 2px;
+    right: -5px;
+    background-color: #f44336;
+    color: #333;
+    transition: background-color 0.3s;
+    top: -10px;
+}
+
+.info-line {
+    position: relative;
+    padding: 8px;
+}
+
+.info-label {
+    color: black;
+    font-weight: bold
+}
+
+.info-value {
+    color: black;
+}
+
+.orders-section {
+    position: relative;
+    margin-top: 15px;
+}
+
+/* Stilizare pentru secțiunea cu comenzile care are scroll */
+#orders {
+    max-height: 105px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 10px;
+    background-color: #041eb0;
+    margin-top: 10px;
+}
+
+#orders p {
+    margin: 5px 0;
+    padding: 8px;
+    background-color: rgb(189, 221, 249);
+    border-radius: 4px;
+    border-left: 4px solid #ff0000;
+    font-size: 14px;
+}
+
+#orders::-webkit-scrollbar {
+    width: 8px;
+}
+#orders::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 4px;
+}
+
+#orders::-webkit-scrollbar-thumb {
+    background: #c1c1c1;
+    border-radius: 4px;
+}
+
+#orders::-webkit-scrollbar-thumb:hover {
+    background: #a8a8a8;
+}
+
+#totalGlassesDetails {
+    display: flex;
+    gap: 10px;
+    margin: 10px 0;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+}
+
+#totalGlassesDetails div {
+    background: #041eb0;
+    padding: 5px 10px;
+    border-radius: 4px;
+    font-weight: 500;
+    font-size: 14px;
+    color: #ffffff;
+    border: 1px solid #000000;
+}
+
+.edit-order {
+    display: flex;
+    gap: 30px; /* Distanța dintre butoane - schimbă valoarea după preferință */
+    justify-content: center; /* Centrează butoanele în container */
+    align-items: center;
+    margin-top: 10px;
+}
+
+.edit-order-btn {
+    width: 125px;
+    height: 40px;
+    font-weight: bold;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.add_order_btn {
+
+}
+
+.remove_order_btn {
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+.entrance {
+    background: #333;
+    font-size: 20px;
+    writing-mode: vertical-rl;
+    color:#f44336
+}
+
+.info-panel {
+    background: white;
+    padding: 15px;
+    margin: 20px auto;
+    max-width: 800px;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+.eticheta-raft {
+    font-weight: bold;
+    color: #654321;
+    background: white;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 12px;
+}
+
+.geam {
+    background-color: lightgreen;
+    border: 2px solid #333;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s;
+    text-align: center;
+}
+
+.geam:hover {
+    background-color: #90EE90;
+    transform: scale(1.05);
+}
