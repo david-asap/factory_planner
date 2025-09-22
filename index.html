@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+    <meta charset="UTF-8">
+    <title>Sistem Planificare Depozit Termopane</title>
+    <!-- Link CSS -->
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="controls">
+        <h1>🏭 Sistem Planificare Depozit Termopane</h1>
+        <p>Introduce tipurile și numărul de geamuri pentru a vedea cum să le organizezi în depozit</p>
+        <button onclick="planificaDepozitare()">🔧 Planifică Depozitarea</button>
+        <button onclick="reseteazaDepozit()" class="reset-btn">🗑️ Resetează Depozitul</button>
+    </div>
+    
+    <div class="info-panel" id="infoPanel" style="display: none;">
+        <h3>📊 Rezultate Planificare:</h3>
+        <div id="rezultateText"></div>
+    </div>
+    
+    <div class="container" id="containerDepozit">
+        <div style="position: absolute; font-size: 22px; writing-mode: vertical-lr; top: 52%; right: 10px;">INTRARE</div>
+        <div style="position: absolute; font-size: 40px; top: 28%; left: 60px;">FABRICA</div>
+
+        <div id="shelfPopup" class="popup">
+            <div class="popup-header">
+                <div class="popup-title">Shelf Details</div>
+                <button class="close-btn" onclick="closePopup()">X</button>
+            </div>
+            <div class="popup-content">
+                <!-- Raft cu rand si coloana -->
+                <div class="info-line">
+                    <span class="info-label">Position:</span>
+                    <span class="info-value" id="shelfPosition"></span>
+                </div>
+                <!-- Cat este umplut (in paranteza procentaj)-->
+                <div class="info-line">
+                    <span class="info-label">Glasses on shelf:</span>
+                    <span class="info-value" id="totalGlasses"></span>
+                    <span class="info-value" id="percentageUsed"></span>
+                </div>
+                <!--  Fiecare numar de geam-->
+                <div class="info-line">
+                    <span class="info-value" id="totalGlassesDetails"></span>
+                </div>
+                <!-- Cat mai intra in el -->
+                <div class="info-line">
+                    <span class="info-label">Remaining Space:</span>
+                    <span class="info-value" id="remainingSpace"></span>
+                </div>
+                <!-- Ce comenzi sunt -->
+                <div class="orders-section">
+                    <span class="info-label">Orders:</span>
+                    <div class="info-value" id="orders"></div>
+                </div>
+                <div class="edit-order">
+                    <button class="edit-order-btn" onclick="AddOrder()" style="background-color: #4CAF50;">ADD ORDER</button>
+                    <button class="edit-order-btn" onclick="RemoveOrder()" style="background-color: rgb(235, 52, 52);">REMOVE ORDER</button>
+                    <button class="edit-order-btn" onclick="FindOrder()" style="background-color: rgb(0, 52, 52);">FIND ORDER</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Link JavaScript -->
+    <script src="script.js"></script>
+</body>
+</html>
