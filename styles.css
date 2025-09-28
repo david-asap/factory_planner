@@ -60,6 +60,15 @@ button:hover {
     box-shadow: 0 2px 5px rgba(0,0,0,0.3);
     flex-shrink: 0;
     transition: background-color 0.3s;
+    
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: rgb(0, 0, 0);
+    font-weight: bold;
+    font-size: 15px;
+    text-align: center;
+    line-height: 1.2;
 }
 
 /* Pozitionez rafturile fata de intrare (invers) */
