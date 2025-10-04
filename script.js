@@ -1,7 +1,11 @@
+//creare fabrica
+const index1row = 4, index1collum = 5;
+const index2row = 2, index2collum = 7;
+
 const SHELFS = {
     shelfs_arr:[],
-    shelfs_no: 34,  //modify after your factory
-    shelf_capacity: 100 //cost (50 regular glasses)
+    shelfs_no: index1row * index1collum + index2row * index2collum,  //modify after your factory
+    shelf_capacity: 100 /*cost (50 regular glasses)*/,
 }
 
 const orderIds = {
@@ -48,9 +52,11 @@ function create_shelfs(no_rows, shelfsPerRow, start_point, spacing) {
     }
 }
 
-//creare fabrica
-create_shelfs(4, 5, 42, 10);
-create_shelfs(2, 7, 75, -10);
+create_shelfs(index1row, index1collum, 42, 10);
+create_shelfs(index2row, index2collum, 75, -10);
+
+let remainingFactorySpace = SHELFS.shelfs_no * SHELFS.shelf_capacity;
+console.log(`${remainingFactorySpace}`);
 
 const test1 = {
     ID_NO: 69,
@@ -332,6 +338,7 @@ function AddOrder() {
 		alert('The order is bigger than the remaining capacity!');
 		return;
 	}
+	console.log('DA');
 
 	placeOrderSmart(orderData, total_cost);
 }
@@ -357,7 +364,212 @@ function parse_new_order() {
 }
 
 function placeOrderSmart(orderData, total_cost) {
+    if (total_cost > remainingFactorySpace) {
+        alert('The order is bigger than the remaining capacity!');
+        return;
+    }
+
+    const needed_full_shelfs = Math.floor(total_cost / SHELFS.shelf_capacity);
+    const remainder = total_cost % SHELFS.shelf_capacity;
     
+    const emptyShelves = SHELFS.shelfs_arr.filter(
+        shelf => shelf.remainingCapacity == SHELFS.shelf_capacity
+    );
+
+    const usedShelves = []; // {shelf, cost, glasses: {small, normal, big}}
+
+    // Case 1: The order fits perfectly on empty shelfs
+    if (remainder == 0) {
+        if (emptyShelves.length < needed_full_shelfs) {
+            alert('Not enough empty shelves for this order!');
+            return;
+        }
+        
+        if (!distributeGlassesOnShelves(orderData, usedShelves, needed_full_shelfs, 0, emptyShelves)) {
+            alert('Cannot distribute glasses properly on shelves!');
+            return;
+        }
+		console.log(usedShelves);
+    } 
+    // Case 2: The order doesn't fit perfectly
+    else {
+        if (emptyShelves.length < needed_full_shelfs) {
+            alert('Not enough empty shelves for this order!');
+            return;
+        }
+        
+        // SUBCASE 1: Limited empty shelfs (max on 2 occupied shelfs)
+        if (emptyShelves.length == needed_full_shelfs) {
+            const foundShelves = findShelvesForRemainderOn2(remainder);
+            
+            if (!foundShelves) {
+                alert('Cannot fit the remainder on existing partial shelves!');
+                return;
+            }
+
+            if (!distributeGlassesOnShelves(orderData, usedShelves, needed_full_shelfs, 
+                                           foundShelves.length, emptyShelves, foundShelves)) {
+                alert('Cannot distribute glasses properly on shelves!');
+                return;
+            }
+        }
+        // SUBCASE 2: (if the remainder doesn't fit on max 1 occupied shelf, put on empty one)
+        else {
+            const suitableShelf = findBestFitShelf(remainder);
+            const partialShelvesCount = suitableShelf ? 1 : 0;
+            const extraEmptyShelf = suitableShelf ? 0 : 1;
+
+            const partialShelves = suitableShelf ? 
+                [{ shelf: suitableShelf, cost: remainder }] : 
+                [{ shelf: emptyShelves[needed_full_shelfs], cost: remainder }];
+
+            if (!distributeGlassesOnShelves(orderData, usedShelves, needed_full_shelfs + extraEmptyShelf, 
+                                           partialShelvesCount, emptyShelves, 
+                                           suitableShelf ? partialShelves : null)) {
+                alert('Cannot distribute glasses properly on shelves!');
+                return;
+            }
+        }
+    }
+
+    // Place the order
+    hash.set(orderData.ID_NO, orderData);
+    
+    for (const shelfData of usedShelves) {
+        const { shelf, cost, glasses } = shelfData;
+        
+        shelf.remainingCapacity -= cost;
+        shelf.orderIds.push(orderData.ID_NO);
+        orderData.Located.push({ 
+            shelfName: shelf.name, 
+            cost: cost,
+            glasses: glasses 
+        });
+        
+        const shelfIndex = SHELFS.shelfs_arr.indexOf(shelf);
+        updateShelfColor(shelfIndex);
+    }
+
+    remainingFactorySpace -= total_cost;
+    alert(`Order ${orderData.ID_NO} placed successfully on ${usedShelves.length} shelf/shelves!`);
+}
+
+function distributeGlassesOnShelves(orderData, usedShelves, emptyShelvesCount, partialShelvesCount, 
+                                   emptyShelves, partialShelves = null) {
+    let remainingSmall = orderData.Glassestype.total_small;
+    let remainingNormal = orderData.Glassestype.total_normal;
+    let remainingBig = orderData.Glassestype.total_big;
+    
+    // Distribute on empty shelves first
+    for (let i = 0; i < emptyShelvesCount; i++) {
+        const result = matchGlassesCost(remainingSmall, remainingNormal, remainingBig, SHELFS.shelf_capacity);
+        
+        usedShelves.push({
+            shelf: emptyShelves[i],
+            cost: SHELFS.shelf_capacity - result.remaining_cost,
+            glasses: {
+                small: result.used_small,
+                normal: result.used_normal,
+                big: result.used_big
+            }
+        });
+        
+        remainingSmall -= result.used_small;
+        remainingNormal -= result.used_normal;
+        remainingBig -= result.used_big;
+    }
+    
+    // Distribute on partial shelves if any
+    if (partialShelves && partialShelvesCount > 0) {
+        for (const { shelf, cost } of partialShelves) {
+            const result = matchGlassesCost(remainingSmall, remainingNormal, remainingBig, cost);
+            
+            usedShelves.push({
+                shelf: shelf,
+                cost: cost,
+                glasses: {
+                    small: result.used_small,
+                    normal: result.used_normal,
+                    big: result.used_big
+                }
+            });
+            
+            remainingSmall -= result.used_small;
+            remainingNormal -= result.used_normal;
+            remainingBig -= result.used_big;
+        }
+    }
+    
+    // Verify all glasses were distributed
+    if (remainingSmall != 0 || remainingNormal != 0 || remainingBig != 0) {
+        return false;
+    }
+    
+    return true;
+}
+
+function matchGlassesCost(small, normal, big, cost) {
+    let used_big = Math.min(Math.floor(cost / glassesTypes.big.cost), big);
+    cost -= (used_big * glassesTypes.big.cost);
+    
+    let used_normal = Math.min(Math.floor(cost / glassesTypes.normal.cost), normal);
+    cost -= (used_normal * glassesTypes.normal.cost);
+    
+    let used_small = Math.min(cost / glassesTypes.small.cost, small);
+    cost -= used_small * glassesTypes.small.cost;
+    
+    return { used_small, used_normal, used_big, remaining_cost: cost };
+}
+
+function findBestFitShelf(remainder) {
+    let bestShelf = null;
+    let minWaste = Infinity;
+    
+    for (const shelf of SHELFS.shelfs_arr) {
+        if (shelf.remainingCapacity >= remainder && 
+            shelf.remainingCapacity < SHELFS.shelf_capacity) {
+            
+            const waste = shelf.remainingCapacity - remainder;
+            
+            if (waste < minWaste) {
+                minWaste = waste;
+                bestShelf = shelf;
+            }
+        }
+    }
+    
+    return bestShelf;
+}
+
+function findShelvesForRemainderOn2(remainder) {
+    const partialShelves = [];
+    
+    for (const shelf of SHELFS.shelfs_arr) {
+        if (shelf.remainingCapacity > 0 && shelf.remainingCapacity < SHELFS.shelf_capacity) {
+            if (shelf.remainingCapacity >= remainder) {
+                return [{ shelf, cost: remainder }];
+            }
+            partialShelves.push(shelf);
+        }
+    }
+    
+    for (let i = 0; i < partialShelves.length; i++) {
+        const s1 = partialShelves[i];
+        const needed = remainder - s1.remainingCapacity;
+        
+        for (let j = i + 1; j < partialShelves.length; j++) {
+            const s2 = partialShelves[j];
+            
+            if (s2.remainingCapacity >= needed) {
+                return [
+                    { shelf: s1, cost: s1.remainingCapacity },
+                    { shelf: s2, cost: needed }
+                ];
+            }
+        }
+    }
+    
+    return null;
 }
 
 updateAllShelfColors();
@@ -401,8 +613,4 @@ function reseteazaDepozit() {
     document.getElementById('infoPanel').style.display = 'none';
     depozitCurent = null;
     alert("🗑️ Depozitul a fost resetat!\n\nDatele salvate în istoric rămân intacte.");
-<<<<<<< HEAD
 }
-=======
-}
->>>>>>> 96f8914 (Added updated code)
