@@ -9,9 +9,10 @@
 <body>
     <div class="controls">
         <h1>🏭 Sistem Planificare Depozit Termopane</h1>
-        <p>Introduce tipurile și numărul de geamuri pentru a vedea cum să le organizezi în depozit</p>
-        <button onclick="planificaDepozitare()">🔧 Planifică Depozitarea</button>
+        <p>Introduce tipurile si numarul de geamuri pentru a vedea cum sa le organizezi in depozit</p>
+        <button onclick="AddOrder()">🔧 Add Order</button>
         <button onclick="reseteazaDepozit()" class="reset-btn">🗑️ Resetează Depozitul</button>
+        <button onclick="FindOrder()" style="background-color: rgb(0, 52, 52);" >Find Order</button>
     </div>
     
     <div class="info-panel" id="infoPanel" style="display: none;">
@@ -55,9 +56,9 @@
                     <div class="info-value" id="orders"></div>
                 </div>
                 <div class="edit-order">
-                    <button class="edit-order-btn" onclick="AddOrder()" style="background-color: #4CAF50;">ADD ORDER</button>
+                    <button class="edit-order-btn" onclick="AddOrderOnShelf()" style="background-color: #4CAF50;">ADD ORDER</button>
                     <button class="edit-order-btn" onclick="RemoveOrder()" style="background-color: rgb(235, 52, 52);">REMOVE ORDER</button>
-                    <button class="edit-order-btn" onclick="FindOrder()" style="background-color: rgb(0, 52, 52);">FIND ORDER</button>
+                    <button class="edit-order-btn" onclick="FindOrderOnShelf()" style="background-color: rgb(0, 52, 52);">FIND ORDER</button>
                 </div>
             </div>
         </div>

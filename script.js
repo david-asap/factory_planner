@@ -133,7 +133,7 @@ function closePopup() {
     document.getElementById('shelfPopup').style.display = 'none';
 }
 
-function AddOrder() {
+function AddOrderOnShelf() {
     if (currentShelfIndex == -1) {
         alert('You haven\'t selected any shelf');
         return;
@@ -166,8 +166,8 @@ function AddOrder() {
     //orderData.Located.push(SHELFS.shelfs_arr[currentShelfIndex].name);
 
     if (total_cost > shelf.remainingCapacity) {
-        alert(`The order is too big for this shelf!`); //continuare pentru impartirea automata
-/*                                                       a comenzii pe alte rafturi*/
+        alert(`The order is too big for this shelf!`);
+		return;
     } else {
         orderData.Located.push({ shelfName: SHELFS.shelfs_arr[currentShelfIndex].name, cost: total_cost });
         shelf.remainingCapacity -= total_cost;
@@ -240,7 +240,7 @@ function RemoveOrder() {
     alert(`Order ${remID} was removed successfully!`);
 }
 
-function FindOrder() {
+function FindOrderOnShelf() {
     if (currentShelfIndex === -1) {
         alert("No shelf selected!");
         return;
@@ -296,7 +296,7 @@ function updateShelfColor(shelfIndex) {
     const newColor = getShelfColor(percentageFilled);
     shelf.domElement.style.backgroundColor = newColor;
     shelf.domElement.style.borderColor = newColor;
-    shelf.domElement.textContent = `~${shelf.remainingCapacity / 2}`;
+    shelf.domElement.textContent = `~${Math.floor(shelf.remainingCapacity / 2)}`;
 }
 
 function updateAllShelfColors() {
@@ -305,35 +305,37 @@ function updateAllShelfColors() {
     }
 }
 
-function planificaDepozitare() {
-    const orderId = parse_new_order();
+function AddOrder() {
+	const orderId = parse_new_order();
 	if (orderId == -1)
 		return;
 
 	const orderData = {
-        ID_NO: orderId,
-        Glassestype: {
-            total_small: getGlassInput('small glasses'),
-            total_normal: getGlassInput('normal glasses'),
-            total_big: getGlassInput('big glasses')
-        },
-        Located: []
-    };
-    const total_cost =  orderData.Glassestype.total_small * glassesTypes.small.cost +
-                        orderData.Glassestype.total_normal * glassesTypes.normal.cost +
-                        orderData.Glassestype.total_big * glassesTypes.big.cost;
-	if (total_cost > SHELFS.shelf_capacity) {
-        const message = `Order too big for 1 shelf. Whould you like to place it on more shelfs?`;
-        const choise = confirm(message);
-        if (choise)
-            placeOrderSmart(orderData, total_cost);
-        else
-            alert('The order has been canceled!');
-    } else {
-        //
-    }
+		ID_NO: orderId,
+		Glassestype: {
+			total_small: getGlassInput('small glasses'),
+			total_normal: getGlassInput('normal glasses'),
+			total_big: getGlassInput('big glasses')
+		},
+		Located: []
+	};
 
+	const total_cost =  orderData.Glassestype.total_small * glassesTypes.small.cost +
+						orderData.Glassestype.total_normal * glassesTypes.normal.cost +
+						orderData.Glassestype.total_big * glassesTypes.big.cost;
+
+	if (total_cost > remainingFactorySpace) {
+		// const result = matchGlassesCost(orderData.Glassestype.total_small, orderData.Glassestype.total_normal,
+		// 								orderData.Glassestype.total_big, remainingFactorySpace);
+		//trebuie sa verific daca geamurile pe care le am intra pe rafturi
+		
+		alert('The order is bigger than the remaining capacity!');
+		return;
+	}
+
+	placeOrderSmart(orderData, total_cost);
 }
+
 
 function parse_new_order() {
 	const orderIdInput = prompt('Enter the new order ID: ');
@@ -355,40 +357,7 @@ function parse_new_order() {
 }
 
 function placeOrderSmart(orderData, total_cost) {
-    const max_total_cost = 0;
-    if (total_cost % SHELFS.shelf_capacity == 0 && total_cost != 0)
-        max_total_cost = SHELFS.shelf_capacity;
-    else
-        max_total_cost = total_cost % SHELFS.shelf_capacity;
-    const shelf = SHELFS.shelfs_arr.find(s => s.remainingCapacity >= max_total_cost && s.orderIds.length > 0);
-    if (!shelf) {
-        shelf = SHELFS.shelfs_arr.find(s => s.remainingCapacity >= max_total_cost);
-        if (!shelf) {//order too big
-            alert(`Insufficient space in the factory!`);
-            return;
-        } else {//  cautare raft gol
-
-        }
-    } else {//  cautare raft deja ocupat
-        const big = max_total_cost / 4;
-        if (big > orderData.Glassestype[total_big])
-            big = orderData.Glassestype[total_big];
-        max_total_cost -= big * 4;
-        const normal = max_total_cost / 2;
-        if (normal > orderData.Glassestype[total_normal])
-            normal = orderData.Glassestype[total_normal];
-        max_total_cost -= normal;
-        const small = max_total_cost;
-        if (small > orderData.Glassestype[total_small])
-            small = orderData.Glassestype[total_small];
-        max_total_cost -= small;
-        
-        shelf.capacity -= max_total_cost;
-
-    }
-    total_cost -= max_total_cost;
-    if (total_cost > 0)
-        placeOrderSmart(orderData, total_cost);
+    
 }
 
 updateAllShelfColors();
@@ -432,4 +401,8 @@ function reseteazaDepozit() {
     document.getElementById('infoPanel').style.display = 'none';
     depozitCurent = null;
     alert("🗑️ Depozitul a fost resetat!\n\nDatele salvate în istoric rămân intacte.");
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> 96f8914 (Added updated code)
