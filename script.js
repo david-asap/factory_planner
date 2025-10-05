@@ -569,43 +569,6 @@ function findShelvesForRemainderOn2(remainder) {
 
 updateAllShelfColors();
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-function reseteazaDepozit() {
-    if (!confirm("⚠️ Ești sigur că vrei să resetezi depozitul?\n\nDacă nu l-ai salvat, vei pierde toate datele!")) return;
-    document.getElementById('containerDepozit').innerHTML = `
-        <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center; color: #666;">
-            <h2>🏪 Depozitul este gol</h2>
-            <p>Apasă "Planifică Depozitarea" pentru a începe</p>
-        </div>`;
-    document.getElementById('infoPanel').style.display = 'none';
-    depozitCurent = null;
-    alert("🗑️ Depozitul a fost resetat!\n\nDatele salvate în istoric rămân intacte.");
-}
+// function reseteazaDepozit() {
+    
+// }
