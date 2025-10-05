@@ -12,7 +12,7 @@ const orderIds = {
     ID_NO: null,
     Glassestype: {total_small: 0, total_normal: 0, total_big: 0},
     Located: [
-        {shelfName: "", cost: 0}
+        {shelfName: "", cost: 0, glasses:""}
     ] //(indexurile shelfurilor unde se afla comanda)
 }
 
@@ -58,25 +58,6 @@ create_shelfs(index2row, index2collum, 75, -10);
 let remainingFactorySpace = SHELFS.shelfs_no * SHELFS.shelf_capacity;
 console.log(`${remainingFactorySpace}`);
 
-const test1 = {
-    ID_NO: 69,
-    Glassestype: {total_small: 3, total_normal: 7, total_big: 10},
-    Located: [1.4]
-}
-const test2 = {
-    ID_NO: 33,
-    Glassestype: {total_small: 5, total_normal: 5, total_big: 0},
-    Located: 0
-}
-
-//  SHELFS.shelfs_arr[1].orderIds.push(test1.ID_NO);
-//  hash.set(69, test1);
-// SHELFS.shelfs_arr[0].orderIds.push(test2.ID_NO);
-// SHELFS.shelfs_arr[0].orderIds.push(test2.ID_NO);
-// hash.set(test1.ID_NO, test1);
-// hash.set(test2.ID_NO, test2);
-// console.log(hash.get(69));
-
 //ne raportam la un geam cu cost default = 2
 const glassesTypes = {
     'small': { nume: 'Small Glass', cost: 1},
@@ -101,7 +82,7 @@ function showShelfPopup(shelf_index) {
     = `(${Math.round(percentageUsed)}%filled)`;
 
     const capacity = shelf.remainingCapacity;
-    console.log(shelf.orderIds.length);
+
     if (shelf.orderIds.length == 0) {
         document.getElementById('remainingSpace').textContent =
             `${capacity} small | ${Math.floor(capacity / 2)} medium | ${Math.floor(capacity / 4)} big`;
@@ -113,23 +94,36 @@ function showShelfPopup(shelf_index) {
         let html="";
         let totalGlsDet = {total_small: 0, total_normal: 0, total_big: 0};
 
-        for (let i = 0; i < shelf.orderIds.length && shelf.orderIds.length > 0; i++) {
+        for (let i = 0; i < shelf.orderIds.length; i++) {
             const order = hash.get(shelf.orderIds[i]);
-            console.log(order);
-            for (const type in totalGlsDet)
-                totalGlsDet[type] += order.Glassestype[type];
-            html += `<p>ID: ${order.ID_NO}; Small: ${order.Glassestype.total_small}; 
-            Normal: ${order.Glassestype.total_normal}; Big: ${order.Glassestype.total_big}</p>`;
+            
+            //Finds how many specific glasses on that shelf
+            const locationInfo = order.Located.find(loc => loc.shelfName === shelf.name);
+            
+            if (locationInfo && locationInfo.glasses) {
+                const glassesOnThisShelf = locationInfo.glasses;
+                totalGlsDet.total_small += glassesOnThisShelf.small;
+                totalGlsDet.total_normal += glassesOnThisShelf.normal;
+                totalGlsDet.total_big += glassesOnThisShelf.big;
+                
+                html += `<p>ID: ${order.ID_NO}; Small: ${glassesOnThisShelf.small}; 
+                Normal: ${glassesOnThisShelf.normal}; Big: ${glassesOnThisShelf.big}</p>`;
+            } else {
+                for (const type in totalGlsDet)
+                    totalGlsDet[type] += order.Glassestype[type];
+                html += `<p>ID: ${order.ID_NO}; Small: ${order.Glassestype.total_small}; 
+                Normal: ${order.Glassestype.total_normal}; Big: ${order.Glassestype.total_big}</p>`;
+            }
         }
         const arr = Object.keys(totalGlsDet).map(key => `${key}: ${totalGlsDet[key]}`);
-        //afiseaza fiecare tip cu nr lui de geamuri
+        //show every glasses type with it s number
         document.getElementById("totalGlassesDetails").innerHTML = arr
         .map(item => `<div>${item}</div>`)
         .join(" ");
-        //afiseaza cate geamuri mai poti sa pui
+        //show how many more glasses you can add
         document.getElementById('remainingSpace').textContent =
         `${capacity} small | ${Math.floor(capacity / 2)} medium | ${Math.floor(capacity / 4)} big`;
-        //afiseaza comenzile
+        //show all orders on the shelf
         document.getElementById("orders").innerHTML = html;
     }
     popup.style.display = 'block';
@@ -222,8 +216,8 @@ function RemoveOrder() {
         return;
     }
 
-    for (const loc of order_info.Located    ) {
-        const shelf = SHELFS.shelfs_arr.find(s => s.name === loc.shelfName);
+    for (const loc of order_info.Located) {
+        const shelf = SHELFS.shelfs_arr.find(s => s.name == loc.shelfName);
         if (!shelf) continue;
 
         // elimină ID-ul din shelf
@@ -237,7 +231,7 @@ function RemoveOrder() {
     }
 
     hash.delete(remID);
-    updateShelfColor(currentShelfIndex);
+    updateAllShelfColors();;
 
     if (currentShelfIndex !== -1) {
         showShelfPopup(currentShelfIndex);
@@ -338,7 +332,6 @@ function AddOrder() {
 		alert('The order is bigger than the remaining capacity!');
 		return;
 	}
-	console.log('DA');
 
 	placeOrderSmart(orderData, total_cost);
 }
@@ -389,7 +382,6 @@ function placeOrderSmart(orderData, total_cost) {
             alert('Cannot distribute glasses properly on shelves!');
             return;
         }
-		console.log(usedShelves);
     } 
     // Case 2: The order doesn't fit perfectly
     else {
@@ -432,7 +424,10 @@ function placeOrderSmart(orderData, total_cost) {
         }
     }
 
-    // Place the order
+    finalizeOrderPlacement(orderData, usedShelves, total_cost);
+}
+
+function finalizeOrderPlacement(orderData, usedShelves, total_cost) {
     hash.set(orderData.ID_NO, orderData);
     
     for (const shelfData of usedShelves) {
