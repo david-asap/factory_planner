@@ -8,11 +8,11 @@
 </head>
 <body>
     <div class="controls">
-        <h1>🏭 Sistem Planificare Depozit Termopane</h1>
-        <p>Introduce tipurile si numarul de geamuri pentru a vedea cum sa le organizezi in depozit</p>
+        <h1>🏭 Sistem Planificare Depozit Termopane 🏭</h1>
+        <!-- <p>Introduce tipurile si numarul de geamuri pentru a vedea cum sa le organizezi in depozit</p> -->
         <button onclick="AddOrder()">🔧 Add Order</button>
         <button onclick="reseteazaDepozit()" class="reset-btn">🗑️ Resetează Depozitul</button>
-        <button onclick="FindOrder()" style="background-color: rgb(0, 52, 52);" >Find Order</button>
+        <button onclick="FindOrder()" style="background-color: rgb(69, 144, 198);" >🔎 Find Order</button>
     </div>
     
     <div class="info-panel" id="infoPanel" style="display: none;">
@@ -27,7 +27,7 @@
         <div id="shelfPopup" class="popup">
             <div class="popup-header">
                 <div class="popup-title">Shelf Details</div>
-                <button class="close-btn" onclick="closePopup()">X</button>
+                <button class="close-btn" onclick="closePopup('shelfPopup')">X</button>
             </div>
             <div class="popup-content">
                 <!-- Raft cu rand si coloana -->
@@ -59,6 +59,25 @@
                     <button class="edit-order-btn" onclick="AddOrderOnShelf()" style="background-color: #4CAF50;">ADD ORDER</button>
                     <button class="edit-order-btn" onclick="RemoveOrder()" style="background-color: rgb(235, 52, 52);">REMOVE ORDER</button>
                     <button class="edit-order-btn" onclick="FindOrderOnShelf()" style="background-color: rgb(0, 52, 52);">FIND ORDER</button>
+                </div>
+            </div>
+        </div>
+        <div id = "ID_Popup" class = "popup">
+            <div class="popup-header">
+                <div class="popup-title">Order Details</div>
+                <button class="close-btn" onclick="closePopup('ID_Popup')">X</button>
+            </div>
+            <div id= "popup-content">
+                <div class= "info-line">
+                    <span class= "info-label">Order ID:</span>
+                    <span class= "info-value" id= "OrderID"></span>
+                </div>
+                <div class= "info-line">
+                    <span class = "info-label">Location/s:</span>
+                    <span class= "info-value" id= "totalGlassesDetails"></span>
+                </div>
+                <div class= "info-line">
+                    <span class= "info-value" id= "orderLocations"></span>
                 </div>
             </div>
         </div>

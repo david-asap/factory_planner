@@ -74,7 +74,7 @@ button:hover {
 /* Pozitionez rafturile fata de intrare (invers) */
 .rafturi-container {
     display: flex;
-    gap: 20px; /* Distanță egală automată între toate rafturile */
+    gap: 20px; /* Distanta egala automata intre toate rafturile */
     position: absolute;
     right: 100px;
     flex-direction: row;
@@ -145,7 +145,7 @@ button:hover {
     margin-top: 15px;
 }
 
-/* Stilizare pentru secțiunea cu comenzile care are scroll */
+/* Stilizare pentru sectiunea cu comenzile care are scroll */
 #orders {
     max-height: 105px;
     overflow-y: auto;
@@ -224,13 +224,14 @@ button:hover {
     font-size: 14px;
 }
 
-.add_order_btn {
+
+/* .add_order_btn {
 
 }
 
 .remove_order_btn {
 
-}
+} */
 
 
 
@@ -258,31 +259,4 @@ button:hover {
     max-width: 800px;
     border-radius: 8px;
     box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-}
-
-.eticheta-raft {
-    font-weight: bold;
-    color: #654321;
-    background: white;
-    padding: 2px 8px;
-    border-radius: 4px;
-    font-size: 12px;
-}
-
-.geam {
-    background-color: lightgreen;
-    border: 2px solid #333;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 11px;
-    font-weight: bold;
-    cursor: pointer;
-    transition: all 0.3s;
-    text-align: center;
-}
-
-.geam:hover {
-    background-color: #90EE90;
-    transform: scale(1.05);
 }
