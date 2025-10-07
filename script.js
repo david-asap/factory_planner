@@ -18,43 +18,6 @@ const orderIds = {
 
 const hash = new Map();
 
-function FindOrder(){
-    
-    closePopup("shelfPopup");
-    const input = prompt(`Enter you order ID!`);
-    if (!input)
-        return null;
-
-    if (input.trim() == '')
-        return 0;
-
-    const number_input = parseInt(input.trim());
-
-    if (isNaN(number_input) || number_input < 0) {
-        alert(`Type a valid number!`);
-        return;
-    }
-
-    const order = hash.get(number_input);
-    if (!order) {
-        alert(`The ID does not exist!`);
-        return;
-    }
-
-    const order_info = document.getElementById('ID_Popup');
-    document.getElementById('OrderID').textContent = order.ID_NO;
-
-    const loc = order.Located.map(locItem => `${locItem.shelfName} `);
-    document.getElementById('orderLocations').textContent = loc;
-    
-    const arr = Object.keys(order.Glassestype).map(key => `${key}: ${order.Glassestype[key]}`);
-    document.getElementById('totalGlassesDetails').innerHTML = arr
-    .map(item => `<div>${item}</div>`)
-    .join(" ");
-    
-    order_info.style.display = 'block'; 
-}
-
 function create_shelfs(no_rows, shelfsPerRow, start_point, spacing) {
     const container = document.getElementById('containerDepozit');         
     for (let row = 0; row < no_rows; row++) {
@@ -341,6 +304,43 @@ function updateAllShelfColors() {
     for (let i = 0; i < SHELFS.shelfs_arr.length; i++) {
         updateShelfColor(i);
     }
+}
+
+function FindOrder(){
+    
+    closePopup("shelfPopup");
+    const input = prompt(`Enter you order ID!`);
+    if (!input)
+        return null;
+
+    if (input.trim() == '')
+        return 0;
+
+    const number_input = parseInt(input.trim());
+
+    if (isNaN(number_input) || number_input < 0) {
+        alert(`Type a valid number!`);
+        return;
+    }
+
+    const order = hash.get(number_input);
+    if (!order) {
+        alert(`The ID does not exist!`);
+        return;
+    }
+
+    const order_info = document.getElementById('ID_Popup');
+    document.getElementById('OrderID').textContent = order.ID_NO;
+
+    const loc = order.Located.map(locItem => `${locItem.shelfName} `);
+    document.getElementById('orderLocations').textContent = loc;
+    
+    const arr = Object.keys(order.Glassestype).map(key => `${key}: ${order.Glassestype[key]}`);
+    document.getElementById('totalGlassesDetails').innerHTML = arr
+    .map(item => `<div>${item}</div>`)
+    .join(" ");
+    
+    order_info.style.display = 'block'; 
 }
 
 function AddOrder() {
