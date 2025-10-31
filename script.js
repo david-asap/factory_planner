@@ -180,11 +180,12 @@ function showShelfPopup(shelf_index) {
                         normal: order.Glassestype.total_normal,
                         big: order.Glassestype.total_big
                     };
-                    for (const type in glassesOnThisShelf)
-                        totalGlsDet[type] += glassesOnThisShelf[type];
+                    totalGlsDet.total_small += glassesOnThisShelf.small;
+                    totalGlsDet.total_normal += glassesOnThisShelf.normal;
+                    totalGlsDet.total_big += glassesOnThisShelf.big;
                 }
                 //nice grid layout for orders
-                document.getElementById("orders").style.gridTemplateColumns = "repeat(3, 1fr)";
+                document.getElementById("orders").classList.add('has-orders');
                 html += `
                     <div class="location-box">
                         <div class="location-header">ID ${order.ID_NO}</div>
@@ -195,7 +196,8 @@ function showShelfPopup(shelf_index) {
                         </div>
                     </div>
                 `;
-            }
+            } else
+                document.getElementById("orders").classList.remove('has-orders');
         }
         const arr = Object.keys(totalGlsDet).map(key => `${key}: ${totalGlsDet[key]}`);
         //show total no of every glasses type
