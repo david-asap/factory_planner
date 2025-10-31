@@ -1,0 +1,16 @@
+Idee:
+*Daca dau click pe un raft le arata cate geamuri sunt pe el, ce ID uri de comenzi sunt si cate geamuri mai intra pe raft.
+*Rafturile sunt colorate diferit in functie de cat de incarcate sunt
+*Pe raft apare scris cam cate geamuri mai intra
+*Printr un buton se adauga o noua comanda de geamuri pe raft:
+1. Se apasa pe buton
+2. Se introduce numarul de geamuri
+3. Se alege raftul dorit
+4. Confirmare
+*Printr un buton se vor face mai multe optiuni pt comenzi:
+1. Se cauta ID ul comenzii
+2. Se afiseaza raftu l/rile pe care este amplasata comanda si detaliile ei (cate geamuri sunt) (se face cu verde raftul)
+3. OPTIUNI: CONFIRMA LIVRAREA|STERGE LIVRAREA|ADAUGA IN PLUS
+*Se va face si o stiva cu ultimele comenzi puse pe raft
+
+Cand adaug o comanda deja existenta pe un raft sa intreb daca sunt sigur ca vreau sa adaug sau sa introduc alta comanda

@@ -43,27 +43,55 @@ function FindOrder(){
 
     const order_info = document.getElementById('ID_Popup');
     document.getElementById('OrderID').textContent = order.ID_NO;
-
-    const loc = order.Located.map(locItem => `${locItem.shelfName} `);
-    document.getElementById('orderLocations').textContent = loc;
     
     const arr = Object.keys(order.Glassestype).map(key => `${key}: ${order.Glassestype[key]}`);
-    document.getElementById('totalGlassesDetails').innerHTML = arr
-    .map(item => `<div>${item}</div>`)
-    .join(" ");
+    console.log(arr);
+    const detailsEl = order_info.querySelector('#totalGlassesDetails') || document.getElementById('totalGlassesDetails');
+    if (detailsEl) {
+        detailsEl.innerHTML = arr
+            .map(item => `<div>${item}</div>`)
+            .join(" ");
+    } else {
+        console.warn('totalGlassesDetails element not found for FindOrder popup');
+    }
     
-    order_info.style.display = 'block'; 
+    let locationsHTML = '';
+    
+    for (const location of order.Located) {
+        let small = location.glasses?.small || order.Glassestype.total_small;
+        let normal = location.glasses?.normal || order.Glassestype.total_normal;
+        let big = location.glasses?.big || order.Glassestype.total_big;
+
+        locationsHTML += `
+            <div class="location-box">
+                <div class="location-header">Shelf ${location.shelfName}</div>
+                <div class="location-details">
+                    <div class="glass-item">Small: ${small}</div>
+                    <div class="glass-item">Normal: ${normal}</div>
+                    <div class="glass-item">Big: ${big}</div>
+                </div>
+                <div class="location-cost">Cost: ${location.cost}</div>
+            </div>
+        `;
+    }
+    
+    document.getElementById('orderLocations').innerHTML = locationsHTML;
+    
+    order_info.style.display = 'block';
 }
 
 function create_shelfs(no_rows, shelfsPerRow, start_point, spacing) {
-    const container = document.getElementById('containerDepozit');         
+    const container = document.getElementById('containerDepozit');
+
     for (let row = 0; row < no_rows; row++) {
         const randRow = document.createElement('div');
+
         randRow.className = `rafturi-container`;
         randRow.style.top = `${start_point - (row * spacing)}%`;
         
         for (let shelf = 0; shelf < shelfsPerRow; shelf++) {
             const randShelf = document.createElement('div');
+
             randShelf.className = `raft`;
             randShelf.title = `rand ${row + 1} raft ${shelfsPerRow - shelf}`;
             randRow.appendChild(randShelf);
@@ -75,6 +103,7 @@ function create_shelfs(no_rows, shelfsPerRow, start_point, spacing) {
                 domElement: randShelf, // referinta la elementul DOM
                 position: { row: row + 1, shelf: shelfsPerRow - shelf }
             };
+
             SHELFS.shelfs_arr.push(shelfObject);
             const shelf_index = SHELFS.shelfs_arr.length - 1;
 
@@ -82,7 +111,6 @@ function create_shelfs(no_rows, shelfsPerRow, start_point, spacing) {
             randShelf.addEventListener('click', function() {
                 showShelfPopup(shelf_index);
             });
-            
             randRow.appendChild(randShelf);
         }
         container.appendChild(randRow);
@@ -138,23 +166,39 @@ function showShelfPopup(shelf_index) {
             //Finds how many specific glasses on that shelf
             const locationInfo = order.Located.find(loc => loc.shelfName === shelf.name);
             
-            if (locationInfo && locationInfo.glasses) {
-                const glassesOnThisShelf = locationInfo.glasses;
-                totalGlsDet.total_small += glassesOnThisShelf.small;
-                totalGlsDet.total_normal += glassesOnThisShelf.normal;
-                totalGlsDet.total_big += glassesOnThisShelf.big;
-                
-                html += `<p>ID: ${order.ID_NO}; Small: ${glassesOnThisShelf.small}; 
-                Normal: ${glassesOnThisShelf.normal}; Big: ${glassesOnThisShelf.big}</p>`;
-            } else {
-                for (const type in totalGlsDet)
-                    totalGlsDet[type] += order.Glassestype[type];
-                html += `<p>ID: ${order.ID_NO}; Small: ${order.Glassestype.total_small}; 
-                Normal: ${order.Glassestype.total_normal}; Big: ${order.Glassestype.total_big}</p>`;
+            if (locationInfo) {
+                let glassesOnThisShelf = {};
+                //save the exact number of glasses on that shelf (all if it was not splitted)
+                if (locationInfo.glasses) {
+                    glassesOnThisShelf = locationInfo.glasses;
+                    totalGlsDet.total_small += glassesOnThisShelf.small;
+                    totalGlsDet.total_normal += glassesOnThisShelf.normal;
+                    totalGlsDet.total_big += glassesOnThisShelf.big;
+                } else {
+                    glassesOnThisShelf = {
+                        small: order.Glassestype.total_small,
+                        normal: order.Glassestype.total_normal,
+                        big: order.Glassestype.total_big
+                    };
+                    for (const type in glassesOnThisShelf)
+                        totalGlsDet[type] += glassesOnThisShelf[type];
+                }
+                //nice grid layout for orders
+                document.getElementById("orders").style.gridTemplateColumns = "repeat(3, 1fr)";
+                html += `
+                    <div class="location-box">
+                        <div class="location-header">ID ${order.ID_NO}</div>
+                        <div class="location-details">
+                            <div class="glass-item">Small: ${glassesOnThisShelf.small}</div>
+                            <div class="glass-item">Normal: ${glassesOnThisShelf.normal}</div>
+                            <div class="glass-item">Big: ${glassesOnThisShelf.big}</div>
+                        </div>
+                    </div>
+                `;
             }
         }
         const arr = Object.keys(totalGlsDet).map(key => `${key}: ${totalGlsDet[key]}`);
-        //show every glasses type with it s number
+        //show total no of every glasses type
         document.getElementById("totalGlassesDetails").innerHTML = arr
         .map(item => `<div>${item}</div>`)
         .join(" ");

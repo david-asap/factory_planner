@@ -11,7 +11,7 @@
         <h1>🏭 Sistem Planificare Depozit Termopane 🏭</h1>
         <!-- <p>Introduce tipurile si numarul de geamuri pentru a vedea cum sa le organizezi in depozit</p> -->
         <button onclick="AddOrder()">🔧 Add Order</button>
-        <button onclick="reseteazaDepozit()" class="reset-btn">🗑️ Resetează Depozitul</button>
+        <button onclick="pickUp()" class="reset-btn">❌ Pick up order</button>
         <button onclick="FindOrder()" style="background-color: rgb(69, 144, 198);" >🔎 Find Order</button>
     </div>
     
@@ -73,12 +73,12 @@
                     <span class= "info-value" id= "OrderID"></span>
                 </div>
                 <div class= "info-line">
-                    <span class = "info-label">Location/s:</span>
+                    <span class = "info-label">Total Glasses: </span>
                     <span class= "info-value" id= "totalGlassesDetails"></span>
                 </div>
                 <div class= "info-line">
+                    <span class= "info-label">All shelves:</span>
                     <span class= "info-value" id= "orderLocations"></span>
-                </div>
             </div>
         </div>
     </div>
